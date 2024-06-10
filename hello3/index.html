@@ -1,0 +1,42 @@
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<script src="/wasm_exec.js"></script>
+		<script>
+			const go = new Go();
+			WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
+				go.run(result.instance);
+			});
+
+			function sum() {
+				let input1 = document.getElementById("input1").value;
+				let input2 = document.getElementById("input2").value;
+				console.log("result", goSum(Number(input1), Number(input2)));
+			}
+
+			function handleResult(result) {
+				document.getElementById("result").textContent = result;
+			}
+
+			function handleWarning(result) {
+				document.getElementById("warning").textContent = "";
+
+				if (result) {
+					let warning = `warning: result "${result}" exceeds 1000`;
+					document.getElementById("warning").textContent = warning;
+				}
+			}			
+		</script>
+	</head>
+	<body>
+        <input id="input1" type="number"/> 
+		+
+		<input id="input2" type="number"/>
+		=
+		<span id="result"></span>
+        <br/>
+        <input value="Sum" type="button" onclick="sum()" />
+
+		<div id="warning" style="color: orangered; font-weight: bold;"></div>
+    </body>
+</html>
